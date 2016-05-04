@@ -46,9 +46,9 @@ class validate(object):
             end_cnt[topic] = step_cnt[topic] = int(len(documents[topic]) * k )
         
         confusionmtrx = defaultdict(lambda: Counter())
-        
         accuracy = []
         for i in range(int(math.ceil(1.0/k))):
+            no_of_train_docs = 0
             train_docs = defaultdict(lambda: [])
             test_docs = list()
             print('****************************Performing Iteration:',i,' **********************************')
@@ -60,11 +60,12 @@ class validate(object):
                     train_docs[topic].append(doc.document_terms())
                 for doc in test:
                     test_docs.append(doc)
-                print('Topic:',topic,'total docs:',len(documents[topic]),'train size:', len(train))
-                print('Testing offset - start:',start_cnt[topic],' end:',end_cnt[topic])
+                no_of_train_docs += len(train)
+                #print('Topic:',topic,'total docs:',len(documents[topic]),'train size:', len(train))
+                #print('Testing offset - start:',start_cnt[topic],' end:',end_cnt[topic])
                 start_cnt[topic] += step_cnt[topic]
                 end_cnt[topic] += step_cnt[topic]
-            
+            print('Training Size:',no_of_train_docs)
             print('Testing Size:',len(test_docs))
             print('Pruning Terms which do not occur in at-least 2 documents')
             for topic in topics:

@@ -43,7 +43,17 @@ def Kvalidate():
             document = open(file_path,encoding='latin-1').readlines()
             all_docs.append(Document(topic,document[0],document[1:]))
     
-    vald = validate().validate(all_docs)
+    #80% file used for training
+    validate().validate(all_docs)
+    
+    #60% file used for testing
+    validate().validate(all_docs,k=0.4)
+    
+    #50% file used for testing
+    validate().validate(all_docs,k=0.5)
+    
+    #40% file used for testing
+    validate().validate(all_docs,k=0.6)
     
 def main():
     Kvalidate()
