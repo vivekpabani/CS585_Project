@@ -21,9 +21,30 @@ from tfidf import *
 from KMeans import KMeans
 import math
 
+
 def recommendation(all_docs, test_docs, classifier_list):
 
-    option_count = 5
+    print("Recommendation System")
+    print("---------------------")
+
+    try:
+        option_count = int(raw_input("\nEnter number of articles to choose from. [number from 5 to 10 suggested]: "))
+        if option_count < 1 or option_count > 20:
+            print("Invalid Choice.. By default selected 5.")
+            option_count = 5
+    except:
+        print("Invalid Choice.. By default selected 5.")
+        option_count = 5
+
+    try:
+        k_n = int(raw_input("\nEnter number of recommendation per article. [number from 5 to 10 suggested]: "))
+        if k_n < 1 or k_n > 20:
+            print("Invalid Choice.. By default selected 5.")
+            k_n = 5
+    except:
+        print("Invalid Choice.. By default selected 5.")
+        k_n = 5
+
     end = False
 
     while not end:
@@ -35,9 +56,9 @@ def recommendation(all_docs, test_docs, classifier_list):
             for i in range(len(user_docs)):
                 print(str(i+1) + ": " + user_docs[i].title)
 
-            print("r: Refresh List\n") 
+            print("r: Refresh List")
             print("q: Quit()\n")
-            
+
             choice = raw_input("Enter Choice: ")
 
             if choice == 'q':
@@ -71,7 +92,6 @@ def recommendation(all_docs, test_docs, classifier_list):
                     prediction = prediction_list[0]
 
                 knn = KNN(all_docs[prediction])
-                k_n = 5
                 k_neighbours = knn.find_k_neighbours(selected_doc, k_n)
 
                 while True:
@@ -136,6 +156,9 @@ def main():
 
     index = Index(train_docs)
 
+    print("Train Document Count: " + str(len(train_docs)))
+    print("Test  Document Count: " + str(len(test_docs)))
+
     test_topics = [d.topic for d in test_docs]
 
     for doc in train_docs:
@@ -170,11 +193,17 @@ def main():
                                                               c_dict)
 
         classifier.stats = cal_stats(classifier.confusion_matrix)
+        print("Confusion Matrix\n")
+        for item in classifier.confusion_matrix:
+            print(item)
+
+        print("\nStatistics\n")
         print_table(get_stats_table(classifier.stats))
+
+    print("Run time...{} secs \n".format(round(time.time() - start_time, 4)))
 
     recommendation(all_docs, test_docs, classifier_list)
 
-    print("Run time...{} secs \n".format(round(time.time() - start_time, 4)))
 
 if __name__ == '__main__':
     main()

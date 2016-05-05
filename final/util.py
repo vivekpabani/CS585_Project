@@ -19,19 +19,19 @@ def print_table(table):
     lines = ['-'*(i + 2) + '-' for i in col_width]
     dash_line = ''.join(lines)
 
-    print dash_line
+    print(dash_line)
 
     for index, line in enumerate(table):
         table_row = ""
         for i, x in enumerate(line):
             table_row += "{:{}}".format(x, col_width[i]) + " | "
 
-        print "| " + table_row
+        print("| " + table_row)
 
         if index == 0:
-            print dash_line
+            print(dash_line)
 
-    print dash_line
+    print(dash_line)
 
 
 def init_confusion_matrix(c_array):
@@ -47,7 +47,7 @@ def init_confusion_matrix(c_array):
     class_count = len(class_list)
     class_dict = dict(class_index_list)
 
-    conf_mat = [[0 for i in xrange(class_count)] for j in xrange(class_count)]
+    conf_mat = [[0 for i in range(class_count)] for j in range(class_count)]
 
     return conf_mat, class_dict
 
@@ -62,7 +62,7 @@ def update_confusion_matrix(true_y, pred_y, conf_mat, class_dict):
     :return: updated confusion matrix
     """
 
-    for t in xrange(len(true_y)):
+    for t in range(len(true_y)):
         a = class_dict[true_y[t]]
         b = class_dict[pred_y[t]]
         conf_mat[a][b] = conf_mat[a][b] + 1
@@ -79,10 +79,10 @@ def cal_accuracy(conf_mat):
 
     numerator, denominator = 0, 0
 
-    for i in xrange(len(conf_mat)):
+    for i in range(len(conf_mat)):
         numerator = numerator + conf_mat[i][i]
 
-        for j in xrange(len(conf_mat)):
+        for j in range(len(conf_mat)):
             denominator = denominator + conf_mat[i][j]
 
     if denominator == 0:
@@ -102,11 +102,11 @@ def cal_precision(conf_mat):
 
     pre_list = list()
 
-    for i in xrange(len(conf_mat)):
+    for i in range(len(conf_mat)):
         numerator = conf_mat[i][i]
         denominator = 0
 
-        for j in xrange(len(conf_mat)):
+        for j in range(len(conf_mat)):
             denominator = denominator + conf_mat[i][j]
 
         if denominator == 0:
@@ -127,11 +127,11 @@ def cal_recall(conf_mat):
 
     rec_list = list()
 
-    for i in xrange(len(conf_mat)):
+    for i in range(len(conf_mat)):
         numerator = conf_mat[i][i]
         denominator = 0
 
-        for j in xrange(len(conf_mat)):
+        for j in range(len(conf_mat)):
             denominator = denominator + conf_mat[j][i]
         if denominator == 0:
             rec = 0

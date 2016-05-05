@@ -65,7 +65,8 @@ class Document(object):
             self.terms[token] += 1
             
     def tokenize(self, data):
-        return [t.lower() for t in re.findall(r"\w+(?:[-']\w+)*", data) if t not in self.stop_words]
+        # return [t.lower() for t in re.findall(r"\w+(?:[-']\w+)*", data) if t not in self.stop_words]
+        return [t.lower() for t in re.findall(r"\w+(?:[-']\w+)*", data) if t not in self.stop_words and len(t) > 2]
 
     def stem(self, tokens):
         stemmer = PorterStemmer()
