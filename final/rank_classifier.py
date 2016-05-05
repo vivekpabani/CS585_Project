@@ -48,12 +48,10 @@ class RankClassifier(object):
     def classify(self, documents):
 
         predictions = list()
-        for doc in  documents:
+        for doc in documents:
             score_dict = defaultdict(lambda: 0)
             for topic, index in self.index_dict.items():
                 score_dict[topic] = self.cal_score(doc, index)
-
-            #print "Scores : ", score_dict.items()
 
             predictions.append(max(score_dict.iteritems(), key=operator.itemgetter(1))[0])
 
