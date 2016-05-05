@@ -7,6 +7,7 @@ from collections import Counter
 from collections import defaultdict
 import math
 
+
 class KMeans(object):
 
     def __init__(self,topics):
@@ -15,8 +16,9 @@ class KMeans(object):
         self.confusion_matrix = None
         
     def prune_terms(self,docs, min_df=3):
-        """Prune Terms which do not occur on min_df number of documents"""
-        #term_doc_freq = defaultdict(lambda: 0)
+        """
+        Prune Terms which do not occur on min_df number of documents
+        """
         term_doc_freq = Counter()
         for doc in docs:
             for term in doc.keys():

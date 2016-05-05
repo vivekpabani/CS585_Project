@@ -9,9 +9,8 @@ Problem Definition :
 
 __author__ = 'vivek'
 
-from collections import Counter
+from collections import Counter, defaultdict
 import operator
-from util import *
 import math
 
 

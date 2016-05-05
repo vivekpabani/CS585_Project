@@ -1,8 +1,17 @@
-from collections import defaultdict
+#!/usr/bin/env python
+
+
+"""
+Problem Definition :
+
+
+"""
+
+__author__ = 'vivek'
+
 import operator
-from util import *
 import math
-import numpy as np
+from collections import defaultdict
 
 
 class NaiveBayes(object):

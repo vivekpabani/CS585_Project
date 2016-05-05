@@ -9,11 +9,7 @@ Problem Definition :
 
 __author__ = 'vivek'
 
-from util import *
-import os
 from tfidf import *
-from document import *
-import random
 
 
 class KNN(object):

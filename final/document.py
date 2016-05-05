@@ -15,7 +15,9 @@ from nltk.corpus import stopwords
 from collections import defaultdict
 from collections import Counter
 
+
 class Document(object):
+
     stop_words = stopwords.words('english')
 
     def __init__(self, f_path, topic=None):

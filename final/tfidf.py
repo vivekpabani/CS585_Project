@@ -10,7 +10,6 @@ Script to find tfidf and tfidfie from the tf of documents.
 
 __author__ = 'vivek'
 
-import time
 from collections import defaultdict
 import math
 import operator
@@ -143,10 +142,8 @@ class Index(object):
 
     def update_tfidf(self, docs, tfidf_list):
         for i in xrange(len(docs)):
-            # docs[i].tfidf = tfidf_list[i]
             docs[i].tfidf = dict(sorted(tfidf_list[i].iteritems(), key=operator.itemgetter(1), reverse=True)[:30])
 
     def update_tfidfie(self, docs, tfidfie_list):
         for i in xrange(len(docs)):
-            # docs[i].tfidfie = tfidfie_list[i]
             docs[i].tfidfie = dict(sorted(tfidfie_list[i].iteritems(), key=operator.itemgetter(1), reverse=True)[:30])

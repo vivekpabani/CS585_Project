@@ -10,16 +10,16 @@ Problem Definition :
 __author__ = 'vivek'
 
 import time
-from collections import defaultdict
 import os
-from nb import *
-from rank_classifier import *
-from knn import *
+from nb import NaiveBayes
+from rank_classifier import RankClassifier
+from knn import KNN
 import random
-from document import *
-from tfidf import *
-from KMeans import KMeans
-import math
+from document import Document
+from tfidf import Index
+from kmeans import KMeans
+from util import *
+from collections import defaultdict, Counter
 
 
 def recommendation(all_docs, test_docs, classifier_list):
@@ -174,7 +174,7 @@ def main():
     classifier_list = [rc, nb, kmeans]
     for i in range(len(classifier_list)):
 
-        print("Classifier #" + str(i+1) + "\n")
+        print("\nClassifier #" + str(i+1) + "\n")
 
         classifier = classifier_list[i]
 

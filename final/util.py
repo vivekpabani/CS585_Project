@@ -7,6 +7,7 @@ Problem Definition :
 """
 
 __author__ = 'vivek'
+
 from numpy import array, unique
 from collections import defaultdict
 
@@ -90,7 +91,7 @@ def cal_accuracy(conf_mat):
     else:
         acc = float(numerator)/denominator
 
-    return acc
+    return round(acc, 4)
 
 
 def cal_precision(conf_mat):
@@ -115,7 +116,7 @@ def cal_precision(conf_mat):
             pre = float(numerator)/denominator
         pre_list.append(pre)
 
-    return sum(pre_list)/len(pre_list)
+    return round(sum(pre_list)/len(pre_list), 4)
 
 
 def cal_recall(conf_mat):
@@ -139,7 +140,7 @@ def cal_recall(conf_mat):
             rec = float(numerator)/denominator
         rec_list.append(rec)
 
-    return sum(rec_list)/len(rec_list)
+    return round(sum(rec_list)/len(rec_list), 4)
 
 
 def cal_f_measure(prec, rec):
@@ -155,7 +156,7 @@ def cal_f_measure(prec, rec):
     else:
         f_m = float(2 * prec * rec) / (prec + rec)
 
-    return f_m
+    return round(f_m, 4)
 
 
 def cal_stats(confusion_matrix):
