@@ -9,43 +9,43 @@ class NaiveBayes(object):
 
     def __init__(self):
         # stores (class, #documents)
-        self.class_docs = defaultdict(lambda: 0)
+        self.class_doc_count = defaultdict(lambda: 0)
         # stores (class, prior)
         self.class_priors = defaultdict(lambda: 0)
-        # stores (class, (doc, [tokens]))
-        self.class_token_list = defaultdict(lambda: defaultdict(lambda: list()))
-        # stores (class, [tokens])
-        self.class_tokens = defaultdict(lambda: list())
-        # stores (class, (token, {"mean", "var"}))
-        self.class_token_stat = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0)))
+        # stores vocab count of entire data-set
+        self.vocab_count = None
+        # stores (class,(term, freq)
+        self.class_term_freq = defaultdict(lambda: defaultdict(lambda: 0))
+        # stores (class, token_count)
+        self.class_token_count = defaultdict(lambda: 0)
 
         self.confusion_matrix = None
+        self.stats = None
 
     def train(self, documents):
         """
         Given a list of labeled Document objects, compute the class priors and class feature stats.
         """
+
+        vocab_list = list()
+
         for document in documents:
 
             topic = document.topic
-            vec = document.vector
+            tf = document.tf
 
             # count documents per class
-            self.class_docs[topic] += 1
+            self.class_doc_count[topic] += 1
 
-            for token in vec.keys():
-                self.class_token_list[topic][token].append(vec[token])
-                self.class_tokens[topic].append(token)
+            for term in tf.keys():
+                self.class_term_freq[topic][term] = self.class_term_freq[topic][term] + 1
+                self.class_token_count[topic] = self.class_token_count[topic] + 1
+                vocab_list.append(term)
 
-        for topic in self.class_token_list.keys():
-            for token in self.class_token_list[topic].keys():
-                zeros = [0] * (len(self.class_tokens[topic]) - len(self.class_token_list[topic][token]))
-                self.class_token_list[topic][token] = self.class_token_list[topic][token] + zeros
-                self.class_token_stat[topic][token]["mean"] = np.mean(self.class_token_list[topic][token])
-                self.class_token_stat[topic][token]["var"] = np.var(self.class_token_list[topic][token])
+        self.vocab_count = len(set(vocab_list))
 
-        for key in self.class_docs.keys():
-            self.class_priors[key] = float(self.class_docs[key])/float(len(documents))
+        for key in self.class_doc_count.keys():
+            self.class_priors[key] = float(self.class_doc_count[key])/float(len(documents))
 
     def classify(self, documents):
         """
@@ -58,17 +58,15 @@ class NaiveBayes(object):
         scores = defaultdict(lambda: 0)
 
         for document in documents:
-            vec = document.vector
+            tf = document.tf
 
             for topic, prior in self.class_priors.items():
                 scores[topic] = math.log10(prior)
 
-                for token in vec.keys():
-                    t_mean, t_var = self.class_token_stat[topic][token]["mean"], \
-                                    self.class_token_stat[topic][token]["var"]
-                    if t_var != 0 and t_mean != 0:
-                        token_score = (1/math.sqrt(2*math.pi*t_var**2)) * math.exp(-(t_var - t_mean)**2/(2*t_var**2))
-                        scores[topic] += token_score
+                for token in tf.keys():
+                    token_score = tf[token] * math.log10((self.class_term_freq[topic][token] + 1)*1.0/
+                                                         (self.class_token_count[topic] + self.vocab_count))
+                    scores[topic] += token_score
 
             predictions.append(max(scores.iteritems(), key=operator.itemgetter(1))[0])
 

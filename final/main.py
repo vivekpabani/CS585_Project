@@ -34,7 +34,7 @@ def recommendation(all_docs, test_docs, classifier_list):
             for i in xrange(len(user_docs)):
                 print str(i+1) + ": " + user_docs[i].title
 
-            print "r: Refresh List\n"
+            print "r: Refresh List"
             print "q: Quit()\n"
 
             choice = raw_input("Enter Choice: ")
@@ -123,7 +123,7 @@ def main():
 
         all_docs[topic] = temp_docs[:]
 
-    fold_count = 10
+    fold_count = 5
 
     train_docs, test_docs = list(), list()
 
@@ -134,6 +134,9 @@ def main():
         test_docs += value[-test_len:]
 
     index = Index(train_docs)
+
+    print "Train Document Count: ", len(train_docs)
+    print "Test  Document Count: ", len(test_docs)
 
     test_topics = [d.topic for d in test_docs]
 
@@ -150,7 +153,7 @@ def main():
 
     for i in xrange(len(classifier_list)):
 
-        print "Classifier #" + str(i+1) + "\n"
+        print "\nClassifier #" + str(i+1) + "\n"
 
         classifier = classifier_list[i]
 
@@ -169,11 +172,18 @@ def main():
                                                               c_dict)
 
         classifier.stats = cal_stats(classifier.confusion_matrix)
+
+        print "Confusion Matrix\n"
+        for item in classifier.confusion_matrix:
+            print item
+
+        print "\nStatistics\n"
         print_table(get_stats_table(classifier.stats))
+
+    print "Run time...{} secs \n".format(round(time.time() - start_time, 4))
 
     recommendation(all_docs, test_docs, classifier_list)
 
-    print "Run time...{} secs \n".format(round(time.time() - start_time, 4))
 
 if __name__ == '__main__':
     main()
