@@ -20,7 +20,7 @@ class Document(object):
 
     def __init__(self, f_path, topic=None):
 
-        self.content = open(f_path, 'r',encoding='latin-1').readlines()
+        self.content = open(f_path, 'r').readlines()
         self.title = self.content[0]
         self.text = ' '.join(self.content[1:])
         self.topic = topic

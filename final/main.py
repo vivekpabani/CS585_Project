@@ -38,7 +38,7 @@ def recommendation(all_docs, test_docs, classifier_list):
             print("r: Refresh List\n") 
             print("q: Quit()\n")
             
-            choice = input("Enter Choice: ")
+            choice = raw_input("Enter Choice: ")
 
             if choice == 'q':
                 end = True
