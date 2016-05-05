@@ -18,46 +18,27 @@ from knn import *
 import random
 from document import *
 from tfidf import *
-
+from KMeans import KMeans
+import math
 
 def recommendation(all_docs, test_docs, classifier_list):
 
-    print "Recommendation System"
-    print "---------------------"
-
-    try:
-        option_count = int(raw_input("\nEnter number of articles to choose from. [number from 5 to 10 suggested]: "))
-        if option_count < 1 or option_count > 20:
-            print "Invalid Choice.. By default selected 5."
-            option_count = 5
-    except:
-        print "Invalid Choice.. By default selected 5."
-        option_count = 5
-
-    try:
-        k_n = int(raw_input("\nEnter number of recommendation per article. [number from 5 to 10 suggested]: "))
-        if k_n < 1 or k_n > 20:
-            print "Invalid Choice.. By default selected 5."
-            k_n = 5
-    except:
-        print "Invalid Choice.. By default selected 5."
-        k_n = 5
-
+    option_count = 5
     end = False
 
     while not end:
         user_docs = random.sample(test_docs, option_count)
 
         while True:
-            print "\n---Available Choices For Articles(Titles)---\n"
+            print("\n---Available Choices For Articles(Titles)---\n")
 
-            for i in xrange(len(user_docs)):
-                print str(i+1) + ": " + user_docs[i].title
+            for i in range(len(user_docs)):
+                print(str(i+1) + ": " + user_docs[i].title)
 
-            print "r: Refresh List"
-            print "q: Quit()\n"
-
-            choice = raw_input("Enter Choice: ")
+            print("r: Refresh List\n") 
+            print("q: Quit()\n")
+            
+            choice = input("Enter Choice: ")
 
             if choice == 'q':
                 end = True
@@ -68,10 +49,10 @@ def recommendation(all_docs, test_docs, classifier_list):
                 try:
                     user_choice = int(choice) - 1
                     if user_choice < 0 or user_choice >= len(user_docs):
-                        print "Invalid Choice.. Try Again.."
+                        print("Invalid Choice.. Try Again..")
                         continue
                 except:
-                    print "Invalid Choice.. Try Again.."
+                    print("Invalid Choice.. Try Again..")
                     continue
                 selected_doc = user_docs[user_choice]
 
@@ -90,12 +71,13 @@ def recommendation(all_docs, test_docs, classifier_list):
                     prediction = prediction_list[0]
 
                 knn = KNN(all_docs[prediction])
+                k_n = 5
                 k_neighbours = knn.find_k_neighbours(selected_doc, k_n)
 
                 while True:
-                    print "\nRecommended Articles for : " + selected_doc.title
-                    for i in xrange(len(k_neighbours)):
-                        print str(i+1) + ": " + k_neighbours[i].title
+                    print("\nRecommended Articles for : " + selected_doc.title)
+                    for i in range(len(k_neighbours)):
+                        print(str(i+1) + ": " + k_neighbours[i].title)
                     next_choice = raw_input("\nEnter Next Choice: [Article num to read the article. "
                                             "'o' to read the original article. "
                                             "'b' to go back to article choice list.]  ")
@@ -104,32 +86,32 @@ def recommendation(all_docs, test_docs, classifier_list):
                         break
                     elif next_choice == 'o':
                         text = selected_doc.text
-                        print "\nArticle Text for original title : " + selected_doc.title
-                        print text
+                        print("\nArticle Text for original title : " + selected_doc.title)
+                        print(text)
                     else:
                         try:
                             n_choice = int(next_choice) - 1
                             if n_choice < 0 or n_choice >= k_n:
-                                print "Invalid Choice.. Try Again.."
+                                print("Invalid Choice.. Try Again..")
                                 continue
                         except:
-                            print "Invalid Choice.. Try Again.."
+                            print("Invalid Choice.. Try Again..")
                             continue
                         text = k_neighbours[n_choice].text
-                        print "\nArticle Text for recommended title : " + k_neighbours[n_choice].title
-                        print text
+                        print("\nArticle Text for recommended title : " + k_neighbours[n_choice].title)
+                        print(text)
 
 
 def main():
     start_time = time.time()
 
-    t_path = "../bbc/"
+    t_path = os.getcwd()+"/bbc/"
 
     all_docs = defaultdict(lambda: list())
 
     topic_list = list()
 
-    print "Reading all the documents...\n"
+    print("Reading all the documents...\n")
 
     for topic in os.listdir(t_path):
         d_path = t_path + topic + '/'
@@ -142,20 +124,17 @@ def main():
 
         all_docs[topic] = temp_docs[:]
 
-    fold_count = 8
+    fold_count = 10
 
     train_docs, test_docs = list(), list()
 
     for key, value in all_docs.items():
         random.shuffle(value)
-        test_len = len(value)/fold_count
+        test_len = int(len(value)/fold_count)
         train_docs += value[:-test_len]
         test_docs += value[-test_len:]
 
-    index = Index(train_docs)
-
-    print "Train Document Count: ", len(train_docs)
-    print "Test  Document Count: ", len(test_docs)
+    #index = Index(train_docs)
 
     test_topics = [d.topic for d in test_docs]
 
@@ -165,24 +144,25 @@ def main():
     for doc in test_docs:
         doc.vector = doc.tf
 
-    nb = NaiveBayes()
-    rc = RankClassifier()
+    #nb = NaiveBayes()
+    #rc = RankClassifier()
+    kmeans = KMeans(topic_list)
+    
+    #classifier_list = [rc, nb, kmeans]
+    classifier_list = [kmeans]
+    for i in range(len(classifier_list)):
 
-    classifier_list = [rc, nb]
-
-    for i in xrange(len(classifier_list)):
-
-        print "\nClassifier #" + str(i+1) + "\n"
+        print("Classifier #" + str(i+1) + "\n")
 
         classifier = classifier_list[i]
 
         classifier.confusion_matrix, c_dict = init_confusion_matrix(topic_list)
 
-        print "Training...\n"
+        print("Training...\n")
 
         classifier.train(train_docs)
 
-        print "Testing... Classifying the test docs...\n"
+        print("Testing... Classifying the test docs...\n")
 
         predictions = classifier.classify(test_docs)
 
@@ -191,18 +171,11 @@ def main():
                                                               c_dict)
 
         classifier.stats = cal_stats(classifier.confusion_matrix)
-
-        print "Confusion Matrix\n"
-        for item in classifier.confusion_matrix:
-            print item
-
-        print "\nStatistics\n"
         print_table(get_stats_table(classifier.stats))
-
-    print "Run time...{} secs \n".format(round(time.time() - start_time, 4))
 
     recommendation(all_docs, test_docs, classifier_list)
 
+    print("Run time...{} secs \n".format(round(time.time() - start_time, 4)))
 
 if __name__ == '__main__':
     main()

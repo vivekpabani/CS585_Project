@@ -13,14 +13,14 @@ from nltk.stem.porter import *
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.corpus import stopwords
 from collections import defaultdict
-
+from collections import Counter
 
 class Document(object):
     stop_words = stopwords.words('english')
 
     def __init__(self, f_path, topic=None):
 
-        self.content = open(f_path, 'r').readlines()
+        self.content = open(f_path, 'r',encoding='latin-1').readlines()
         self.title = self.content[0]
         self.text = ' '.join(self.content[1:])
         self.topic = topic
@@ -50,7 +50,20 @@ class Document(object):
         self.tfidf = None
         self.tfidfie = None
         self.vector = None
-
+        self.term_count()
+    
+    def document_terms(self):
+        return self.terms
+    
+    def term_count(self):
+        
+        self.terms = Counter()
+        
+        for token in self.title_tokens:
+            self.terms[token] += 1
+        for token in self.text_tokens:
+            self.terms[token] += 1
+            
     def tokenize(self, data):
         return [t.lower() for t in re.findall(r"\w+(?:[-']\w+)*", data) if t not in self.stop_words]
 
