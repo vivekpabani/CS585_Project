@@ -134,7 +134,7 @@ def main():
         train_docs += value[:-test_len]
         test_docs += value[-test_len:]
 
-    #index = Index(train_docs)
+    index = Index(train_docs)
 
     test_topics = [d.topic for d in test_docs]
 
@@ -144,12 +144,11 @@ def main():
     for doc in test_docs:
         doc.vector = doc.tf
 
-    #nb = NaiveBayes()
-    #rc = RankClassifier()
+    nb = NaiveBayes()
+    rc = RankClassifier()
     kmeans = KMeans(topic_list)
     
-    #classifier_list = [rc, nb, kmeans]
-    classifier_list = [kmeans]
+    classifier_list = [rc, nb, kmeans]
     for i in range(len(classifier_list)):
 
         print("Classifier #" + str(i+1) + "\n")
