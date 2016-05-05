@@ -4,6 +4,7 @@
 """
 Problem Definition :
 
+This script is an implementation of rank classifier which depends on the tfidfie indexing method.
 
 """
 
@@ -188,7 +189,7 @@ class LocalIndex(object):
 
         index = defaultdict(lambda: list())
 
-        for i in xrange(len(token_l)):
+        for i in range(len(token_l)):
             doc = token_l[i]
             counter = Counter(doc)
             for token in counter.keys():
@@ -230,7 +231,7 @@ class LocalIndex(object):
         doc_lengths = defaultdict(lambda: 0)
         total_len = 0
 
-        for i in xrange(len(token_l)):
+        for i in range(len(token_l)):
             doc = token_l[i]
             doc_len = len(doc)
             doc_lengths[i] = doc_len

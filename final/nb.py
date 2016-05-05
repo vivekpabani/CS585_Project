@@ -4,6 +4,7 @@
 """
 Problem Definition :
 
+This script is an implementation of Multinomial Naive bayes.
 
 """
 

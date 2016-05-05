@@ -4,6 +4,7 @@
 """
 Problem Definition :
 
+This script defines the structure of a document object. The data is tokenized and tf is stored.
 
 """
 
@@ -55,6 +56,7 @@ class Document(object):
         self.term_count()
     
     def document_terms(self):
+
         return self.terms
     
     def term_count(self):
@@ -71,14 +73,19 @@ class Document(object):
         return [t.lower() for t in re.findall(r"\w+(?:[-']\w+)*", data) if t not in self.stop_words and len(t) > 2]
 
     def stem(self, tokens):
+
         stemmer = PorterStemmer()
+
         return [stemmer.stem(token) for token in tokens]
 
     def lemmatize(self, tokens):
+
         lemmatizer = WordNetLemmatizer()
+
         return [lemmatizer.lemmatize(token) for token in tokens]
 
     def tf_index(self, token_list):
+
         tf = defaultdict(lambda: 0)
 
         for token in token_list:

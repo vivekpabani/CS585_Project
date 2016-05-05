@@ -70,7 +70,7 @@ class Index(object):
 
         tf_index = defaultdict(lambda: list())
 
-        for i in xrange(len(tf)):
+        for i in range(len(tf)):
             doc = tf[i]
 
             for term, freq in doc.items():
@@ -138,12 +138,15 @@ class Index(object):
         return normal_vector_list
 
     def cosine_normalization(self, vector):
+        
         return math.sqrt(sum(i**2 for i in vector))
 
     def update_tfidf(self, docs, tfidf_list):
-        for i in xrange(len(docs)):
+        
+        for i in range(len(docs)):
             docs[i].tfidf = dict(sorted(tfidf_list[i].iteritems(), key=operator.itemgetter(1), reverse=True)[:30])
 
     def update_tfidfie(self, docs, tfidfie_list):
-        for i in xrange(len(docs)):
+        
+        for i in range(len(docs)):
             docs[i].tfidfie = dict(sorted(tfidfie_list[i].iteritems(), key=operator.itemgetter(1), reverse=True)[:30])

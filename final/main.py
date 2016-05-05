@@ -4,6 +4,9 @@
 """
 Problem Definition :
 
+This script creates instances of all the classifiers and trains/tests them. It then provides an interface to the
+recommendation system, where user can select a document from 'n' choices, and system recommends 'm' similar documents,
+where 'n' and 'm' are user selected.
 
 """
 
@@ -27,6 +30,7 @@ def recommendation(all_docs, test_docs, classifier_list):
     print("Recommendation System")
     print("---------------------")
 
+    # ask user for the desired option count and recommendation count. set default value in case invalid inputs.
     try:
         option_count = int(raw_input("\nEnter number of articles to choose from. [number from 5 to 10 suggested]: "))
         if option_count < 1 or option_count > 20:
@@ -47,7 +51,10 @@ def recommendation(all_docs, test_docs, classifier_list):
 
     end = False
 
+    # run the loop until user quits.
     while not end:
+
+        # pick random documents from test docs and provide titles to the user.
         user_docs = random.sample(test_docs, option_count)
 
         while True:
@@ -77,6 +84,8 @@ def recommendation(all_docs, test_docs, classifier_list):
                     continue
                 selected_doc = user_docs[user_choice]
 
+                # classifiers are sorted according to their f_measure in decreasing order. It helps when all
+                # three classifiers differ in their predictions.
                 classifier_list = sorted(classifier_list, key=lambda cl: cl.stats['f_measure'], reverse=True)
 
                 prediction_list = list()
@@ -91,6 +100,7 @@ def recommendation(all_docs, test_docs, classifier_list):
                 else:
                     prediction = prediction_list[0]
 
+                # create knn instance using documents of predicted topic. and find k closest documents.
                 knn = KNN(all_docs[prediction])
                 k_neighbours = knn.find_k_neighbours(selected_doc, k_n)
 
@@ -123,7 +133,10 @@ def recommendation(all_docs, test_docs, classifier_list):
 
 
 def main():
+
     start_time = time.time()
+
+    # Read documents, divide according to the topics and separate train and test data-set.
 
     t_path = os.getcwd()+"/bbc/"
 
@@ -154,6 +167,7 @@ def main():
         train_docs += value[:-test_len]
         test_docs += value[-test_len:]
 
+    # Create tfidf and tfidfie index of training docs, and store into the docs.
     index = Index(train_docs)
 
     print("Train Document Count: " + str(len(train_docs)))
@@ -162,16 +176,18 @@ def main():
     test_topics = [d.topic for d in test_docs]
 
     for doc in train_docs:
-        doc.vector = doc.tfidf
+        doc.vector = doc.tfidfie
 
     for doc in test_docs:
         doc.vector = doc.tf
 
+    # create classifier instances.
     nb = NaiveBayes()
     rc = RankClassifier()
     kmeans = KMeans(topic_list)
     
     classifier_list = [rc, nb, kmeans]
+
     for i in range(len(classifier_list)):
 
         print("\nClassifier #" + str(i+1) + "\n")
@@ -188,11 +204,12 @@ def main():
 
         predictions = classifier.classify(test_docs)
 
-        # Update the confusion matrix with updated values.
+        # Update the confusion matrix and statistics with updated values.
         classifier.confusion_matrix = update_confusion_matrix(test_topics, predictions, classifier.confusion_matrix,
                                                               c_dict)
 
         classifier.stats = cal_stats(classifier.confusion_matrix)
+
         print("Confusion Matrix\n")
         for item in classifier.confusion_matrix:
             print(item)
@@ -202,6 +219,7 @@ def main():
 
     print("Run time...{} secs \n".format(round(time.time() - start_time, 4)))
 
+    # call recommendation system once classifiers are ready.
     recommendation(all_docs, test_docs, classifier_list)
 
 

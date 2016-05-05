@@ -4,6 +4,7 @@
 """
 Problem Definition :
 
+This script implements KNN algorithm which provides methods to find k closest documents to the given document.
 
 """
 
@@ -32,7 +33,7 @@ class KNN(object):
         if target in docs:
             docs.remove(target)
 
-        for i in xrange(len(docs)):
+        for i in range(len(docs)):
             doc = docs[i]
             distance_list.append((i, cosine_similarity(doc, target)))
 
@@ -41,7 +42,7 @@ class KNN(object):
 
         k_neighbours = list()
 
-        for i in xrange(k):
+        for i in range(k):
             k_neighbours.append(docs[sorted_dist_list[i][0]])
 
         return k_neighbours

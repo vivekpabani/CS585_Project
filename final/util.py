@@ -4,6 +4,9 @@
 """
 Problem Definition :
 
+This is a util script which provides functions to create and update confusion matrix, calculate statistics, and print
+table.
+
 """
 
 __author__ = 'vivek'
@@ -160,6 +163,7 @@ def cal_f_measure(prec, rec):
 
 
 def cal_stats(confusion_matrix):
+
     stats = defaultdict(lambda: 0)
 
     stats['accuracy'] = cal_accuracy(confusion_matrix)
@@ -171,6 +175,7 @@ def cal_stats(confusion_matrix):
 
 
 def get_stats_table(stats):
+
     stats_table = list()
 
     stats_table.append(["Measure", "Value"])
